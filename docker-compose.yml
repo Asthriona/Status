@@ -1,14 +1,30 @@
 services:
-  app:
-    build: .
+  caddy:
+    image: caddy:2-alpine
     ports:
-      - "3000:3000"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./static:/srv:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      args:
+        APP_BASE_URL: /status
     depends_on:
       - mongo
     environment:
       - MONGODB_URI=mongodb://mongo:27017/monit
       - JWT_SECRET=${JWT_SECRET:-super-secret-change-me}
       - DEFAULT_ORG_ID=${DEFAULT_ORG_ID:-default}
+      - APP_BASE_URL=/status
     restart: unless-stopped
 
   mongo:
@@ -30,3 +46,5 @@ services:
 
 volumes:
   mongo-data:
+  caddy-data:
+  caddy-config:
