@@ -21,8 +21,9 @@ export default defineNuxtConfig({
   },
 
   app: {
+    baseURL: process.env.APP_BASE_URL || '/',
     head: {
-      title: 'Monit - Status Page',
+      title: 'Asthriona Status',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
