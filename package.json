@@ -1,0 +1,33 @@
+{
+  "name": "monit-status",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@sidebase/nuxt-auth": "^0.9.4",
+    "bcryptjs": "^2.4.3",
+    "chart.js": "^4.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "nuxt": "^3.15.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "undici": "^8.10.0",
+    "vue": "^3.5.13",
+    "vue-chartjs": "^5.3.2",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3"
+  }
+}
