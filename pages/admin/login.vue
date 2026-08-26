@@ -29,34 +29,34 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div class="min-h-screen bg-black flex items-center justify-center">
     <div class="w-full max-w-md">
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-        <h1 class="text-2xl font-bold text-gray-900 text-center mb-6">Admin Login</h1>
+      <div class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 p-8">
+        <h1 class="text-2xl font-bold text-white text-center mb-6">Admin Login</h1>
 
         <form @submit.prevent="handleLogin" class="space-y-4">
-          <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-3">
-            <p class="text-red-800 text-sm">{{ error }}</p>
+          <div v-if="error" class="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+            <p class="text-red-400 text-sm">{{ error }}</p>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
             <input
               v-model="email"
               type="email"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none"
               placeholder="admin@example.com"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1">Password</label>
             <input
               v-model="password"
               type="password"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none"
               placeholder="••••••••"
             />
           </div>
@@ -64,7 +64,7 @@ async function handleLogin() {
           <button
             type="submit"
             :disabled="loading"
-            class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-2 px-4 rounded-lg hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {{ loading ? 'Signing in...' : 'Sign in' }}
           </button>

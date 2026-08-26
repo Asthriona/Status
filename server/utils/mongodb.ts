@@ -9,6 +9,7 @@ export async function connectMongo(): Promise<typeof mongoose> {
   const uri = config.mongodbUri
 
   await mongoose.connect(uri)
+  console.log('[MongoDB] Connecting to', uri)
   isConnected = true
   console.log('[MongoDB] Connected to', uri)
   return mongoose

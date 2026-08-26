@@ -79,53 +79,53 @@ function formatDate(dateString: string) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+  <div class="min-h-screen bg-black">
+    <nav class="bg-slate-950/80 backdrop-blur-sm border-b border-white/5">
       <div class="max-w-7xl mx-auto px-4 py-4 flex items-center gap-6">
-        <NuxtLink to="/admin" class="text-xl font-bold text-gray-900">Monit Admin</NuxtLink>
-        <NuxtLink to="/admin" class="text-sm text-gray-600 hover:text-gray-900">Dashboard</NuxtLink>
-        <NuxtLink to="/admin/components" class="text-sm text-gray-600 hover:text-gray-900">Components</NuxtLink>
-        <NuxtLink to="/admin/incidents" class="text-sm text-blue-600 font-medium">Incidents</NuxtLink>
-        <NuxtLink to="/admin/monitors" class="text-sm text-gray-600 hover:text-gray-900">Monitors</NuxtLink>
+        <NuxtLink to="/admin" class="text-xl font-bold text-white">Status Admin</NuxtLink>
+        <NuxtLink to="/admin" class="text-sm text-gray-400 hover:text-white transition-colors">Dashboard</NuxtLink>
+        <NuxtLink to="/admin/components" class="text-sm text-gray-400 hover:text-white transition-colors">Components</NuxtLink>
+        <NuxtLink to="/admin/incidents" class="text-sm text-cyan-400 font-medium">Incidents</NuxtLink>
+        <NuxtLink to="/admin/monitors" class="text-sm text-gray-400 hover:text-white transition-colors">Monitors</NuxtLink>
       </div>
     </nav>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-8">
-        <h1 class="text-2xl font-bold text-gray-900">Incidents</h1>
+        <h1 class="text-2xl font-bold text-white">Incidents</h1>
         <button
           @click="showModal = true"
-          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          class="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:from-cyan-400 hover:to-blue-400 transition-all"
         >
           Create Incident
         </button>
       </div>
 
       <div v-if="loading" class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
       </div>
 
       <div v-else class="space-y-4">
-        <div v-if="incidents.length === 0" class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center text-gray-500">
+        <div v-if="incidents.length === 0" class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 p-8 text-center text-gray-500">
           No incidents yet
         </div>
         <div
           v-for="incident in incidents"
           :key="incident._id"
-          class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+          class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 p-6"
         >
           <div class="flex items-start justify-between">
             <div>
-              <h3 class="text-lg font-medium text-gray-900">{{ incident.title }}</h3>
+              <h3 class="text-lg font-medium text-white">{{ incident.title }}</h3>
               <div class="flex items-center gap-2 mt-1">
                 <span
-                  class="px-2 py-0.5 rounded-full text-xs font-medium"
+                  class="px-2 py-0.5 rounded-full text-xs font-medium border"
                   :class="{
-                    'bg-orange-100 text-orange-800': incident.status === 'investigating',
-                    'bg-yellow-100 text-yellow-800': incident.status === 'identified',
-                    'bg-blue-100 text-blue-800': incident.status === 'monitoring',
-                    'bg-green-100 text-green-800': incident.status === 'resolved',
-                    'bg-indigo-100 text-indigo-800': incident.status === 'scheduled',
+                    'bg-orange-500/10 text-orange-400 border-orange-500/20': incident.status === 'investigating',
+                    'bg-yellow-500/10 text-yellow-400 border-yellow-500/20': incident.status === 'identified',
+                    'bg-blue-500/10 text-blue-400 border-blue-500/20': incident.status === 'monitoring',
+                    'bg-green-500/10 text-green-400 border-green-500/20': incident.status === 'resolved',
+                    'bg-indigo-500/10 text-indigo-400 border-indigo-500/20': incident.status === 'scheduled',
                   }"
                 >
                   {{ incident.status }}
@@ -140,7 +140,7 @@ function formatDate(dateString: string) {
                 :key="status"
                 @click="updateIncidentStatus(incident._id, status)"
                 :disabled="incident.status === status"
-                class="px-3 py-1 text-xs rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50"
+                class="px-3 py-1 text-xs rounded-lg border border-white/10 text-gray-400 hover:bg-white/5 hover:text-white disabled:opacity-50 transition-all"
               >
                 {{ status }}
               </button>
@@ -151,7 +151,7 @@ function formatDate(dateString: string) {
             <span
               v-for="comp in incident.componentIds"
               :key="comp._id || comp"
-              class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs"
+              class="px-2 py-0.5 bg-white/5 text-gray-400 rounded text-xs border border-white/5"
             >
               {{ comp.name || comp }}
             </span>
@@ -164,8 +164,8 @@ function formatDate(dateString: string) {
               class="flex gap-3 text-sm"
             >
               <span class="text-gray-500">{{ formatDate(update.createdAt) }}</span>
-              <span class="font-medium text-gray-900">{{ update.status }}:</span>
-              <span class="text-gray-600">{{ update.message }}</span>
+              <span class="font-medium text-white">{{ update.status }}:</span>
+              <span class="text-gray-400">{{ update.message }}</span>
             </div>
           </div>
         </div>
@@ -173,18 +173,18 @@ function formatDate(dateString: string) {
     </div>
 
     <!-- Create Incident Modal -->
-    <div v-if="showModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+    <div v-if="showModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="bg-slate-900 border border-white/10 rounded-lg shadow-xl w-full max-w-md mx-4">
         <div class="p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-4">Create Incident</h2>
+          <h2 class="text-lg font-medium text-white mb-4">Create Incident</h2>
           <form @submit.prevent="createIncident" class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-              <input v-model="form.title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+              <label class="block text-sm font-medium text-gray-300 mb-1">Title</label>
+              <input v-model="form.title" required class="w-full px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <select v-model="form.status" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+              <label class="block text-sm font-medium text-gray-300 mb-1">Status</label>
+              <select v-model="form.status" class="w-full px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none">
                 <option value="investigating">Investigating</option>
                 <option value="identified">Identified</option>
                 <option value="monitoring">Monitoring</option>
@@ -193,8 +193,8 @@ function formatDate(dateString: string) {
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Impact</label>
-              <select v-model="form.impact" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+              <label class="block text-sm font-medium text-gray-300 mb-1">Impact</label>
+              <select v-model="form.impact" class="w-full px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none">
                 <option value="none">None</option>
                 <option value="minor">Minor</option>
                 <option value="major">Major</option>
@@ -202,7 +202,7 @@ function formatDate(dateString: string) {
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Affected Components</label>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Affected Components</label>
               <div class="space-y-1">
                 <label
                   v-for="comp in components"
@@ -213,25 +213,25 @@ function formatDate(dateString: string) {
                     type="checkbox"
                     :value="comp._id"
                     v-model="form.componentIds"
-                    class="rounded"
+                    class="rounded border-white/20 bg-white/5 text-cyan-500 focus:ring-cyan-500"
                   />
-                  <span class="text-sm text-gray-700">{{ comp.name }}</span>
+                  <span class="text-sm text-gray-300">{{ comp.name }}</span>
                 </label>
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Initial Update</label>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Initial Update</label>
               <textarea
                 v-model="form.updateMessage"
                 rows="3"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                class="w-full px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none"
               ></textarea>
             </div>
             <div class="flex justify-end gap-3 pt-4">
-              <button type="button" @click="showModal = false" class="px-4 py-2 text-gray-700 hover:text-gray-900">
+              <button type="button" @click="showModal = false" class="px-4 py-2 text-gray-400 hover:text-white transition-colors">
                 Cancel
               </button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              <button type="submit" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-400 hover:to-blue-400 transition-all">
                 Create
               </button>
             </div>

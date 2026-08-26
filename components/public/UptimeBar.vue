@@ -8,18 +8,14 @@ const props = withDefaults(defineProps<Props>(), {
   days: 90,
 })
 
-// Generate mock daily data based on overall uptime
-// In production, this would come from the API
 const dailyData = computed(() => {
   const data: { day: number; uptime: number }[] = []
   const baseUptime = props.uptimePercent
 
   for (let i = 0; i < props.days; i++) {
-    // Simulate some variation
     const variation = (Math.random() - 0.5) * 2
     let uptime = baseUptime + variation
-    
-    // Occasional bad days
+
     if (Math.random() < 0.05) {
       uptime = Math.max(85, uptime - 10)
     }
@@ -53,7 +49,7 @@ function formatDate(index: number): string {
       <span>{{ days }} days ago</span>
       <span>Today</span>
     </div>
-    
+
     <div class="flex gap-0.5 h-8">
       <div
         v-for="(day, index) in dailyData"
@@ -61,8 +57,7 @@ function formatDate(index: number): string {
         class="flex-1 rounded-sm cursor-pointer transition-all hover:scale-y-110 group relative"
         :class="getBarColor(day.uptime)"
       >
-        <!-- Tooltip -->
-        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10 border border-white/10">
           <div class="font-medium">{{ formatDate(index) }}</div>
           <div>{{ day.uptime.toFixed(2) }}% uptime</div>
         </div>

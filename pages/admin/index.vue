@@ -21,7 +21,7 @@ onMounted(() => {
 async function fetchData() {
   try {
     const headers = { Authorization: `Bearer ${token.value}` }
-    
+
     const [componentsData, incidentsData, monitorsData] = await Promise.all([
       $fetch('/api/admin/components', { headers }),
       $fetch('/api/admin/incidents', { headers }),
@@ -46,74 +46,69 @@ function logout() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+  <div class="min-h-screen bg-black">
+    <nav class="bg-slate-950/80 backdrop-blur-sm border-b border-white/5">
       <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         <div class="flex items-center gap-6">
-          <NuxtLink to="/admin" class="text-xl font-bold text-gray-900">Monit Admin</NuxtLink>
-          <NuxtLink to="/admin" class="text-sm text-gray-600 hover:text-gray-900">Dashboard</NuxtLink>
-          <NuxtLink to="/admin/components" class="text-sm text-gray-600 hover:text-gray-900">Components</NuxtLink>
-          <NuxtLink to="/admin/incidents" class="text-sm text-gray-600 hover:text-gray-900">Incidents</NuxtLink>
-          <NuxtLink to="/admin/monitors" class="text-sm text-gray-600 hover:text-gray-900">Monitors</NuxtLink>
+          <NuxtLink to="/admin" class="text-xl font-bold text-white">Status Admin</NuxtLink>
+          <NuxtLink to="/admin" class="text-sm text-gray-400 hover:text-white transition-colors">Dashboard</NuxtLink>
+          <NuxtLink to="/admin/components" class="text-sm text-gray-400 hover:text-white transition-colors">Components</NuxtLink>
+          <NuxtLink to="/admin/incidents" class="text-sm text-gray-400 hover:text-white transition-colors">Incidents</NuxtLink>
+          <NuxtLink to="/admin/monitors" class="text-sm text-gray-400 hover:text-white transition-colors">Monitors</NuxtLink>
         </div>
         <div class="flex items-center gap-4">
-          <NuxtLink to="/" class="text-sm text-blue-600 hover:text-blue-700" target="_blank">View Status Page</NuxtLink>
-          <button @click="logout" class="text-sm text-gray-600 hover:text-gray-900">Logout</button>
+          <NuxtLink to="/" class="text-sm text-cyan-400 hover:text-cyan-300 transition-colors" target="_blank">View Status Page</NuxtLink>
+          <button @click="logout" class="text-sm text-gray-400 hover:text-white transition-colors">Logout</button>
         </div>
       </div>
     </nav>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
-      <h1 class="text-2xl font-bold text-gray-900 mb-8">Dashboard</h1>
+      <h1 class="text-2xl font-bold text-white mb-8">Dashboard</h1>
 
       <div v-if="loading" class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <!-- Components Card -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-lg font-medium text-gray-900">Components</h2>
-          <p class="text-3xl font-bold text-gray-900 mt-2">{{ components.length }}</p>
+        <div class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 p-6">
+          <h2 class="text-lg font-medium text-white">Components</h2>
+          <p class="text-3xl font-bold text-white mt-2">{{ components.length }}</p>
           <p class="text-sm text-gray-500 mt-1">
             {{ components.filter(c => c.status === 'operational').length }} operational
           </p>
-          <NuxtLink to="/admin/components" class="text-sm text-blue-600 hover:text-blue-700 mt-3 block">
+          <NuxtLink to="/admin/components" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block transition-colors">
             Manage →
           </NuxtLink>
         </div>
 
-        <!-- Active Incidents Card -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-lg font-medium text-gray-900">Active Incidents</h2>
-          <p class="text-3xl font-bold text-gray-900 mt-2">
+        <div class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 p-6">
+          <h2 class="text-lg font-medium text-white">Active Incidents</h2>
+          <p class="text-3xl font-bold text-white mt-2">
             {{ incidents.filter(i => i.status !== 'resolved').length }}
           </p>
           <p class="text-sm text-gray-500 mt-1">
             {{ incidents.length }} total
           </p>
-          <NuxtLink to="/admin/incidents" class="text-sm text-blue-600 hover:text-blue-700 mt-3 block">
+          <NuxtLink to="/admin/incidents" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block transition-colors">
             Manage →
           </NuxtLink>
         </div>
 
-        <!-- Monitors Card -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-lg font-medium text-gray-900">Monitors</h2>
-          <p class="text-3xl font-bold text-gray-900 mt-2">{{ monitors.length }}</p>
+        <div class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 p-6">
+          <h2 class="text-lg font-medium text-white">Monitors</h2>
+          <p class="text-3xl font-bold text-white mt-2">{{ monitors.length }}</p>
           <p class="text-sm text-gray-500 mt-1">
             {{ monitors.filter(m => m.currentStatus === 'up').length }} online
           </p>
-          <NuxtLink to="/admin/monitors" class="text-sm text-blue-600 hover:text-blue-700 mt-3 block">
+          <NuxtLink to="/admin/monitors" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block transition-colors">
             Manage →
           </NuxtLink>
         </div>
       </div>
 
-      <!-- Recent Activity -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">Recent Activity</h2>
+      <div class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 p-6">
+        <h2 class="text-lg font-medium text-white mb-4">Recent Activity</h2>
         <div v-if="incidents.length === 0" class="text-gray-500 text-sm">
           No recent activity
         </div>
@@ -121,10 +116,10 @@ function logout() {
           <div
             v-for="incident in incidents.slice(0, 5)"
             :key="incident._id"
-            class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
+            class="flex items-center justify-between py-2 border-b border-white/5 last:border-0"
           >
             <div>
-              <span class="font-medium text-gray-900">{{ incident.title }}</span>
+              <span class="font-medium text-white">{{ incident.title }}</span>
               <span class="text-sm text-gray-500 ml-2">- {{ incident.status }}</span>
             </div>
             <span class="text-xs text-gray-500">

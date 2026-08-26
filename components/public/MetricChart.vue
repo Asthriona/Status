@@ -31,7 +31,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  color: '#3b82f6',
+  color: '#22d3ee',
 })
 
 const chartData = computed(() => ({
@@ -70,18 +70,27 @@ const chartOptions = {
       grid: {
         display: false,
       },
+      ticks: {
+        color: '#6b7280',
+      },
     },
     y: {
       beginAtZero: false,
+      ticks: {
+        color: '#6b7280',
+      },
+      grid: {
+        color: 'rgba(255,255,255,0.05)',
+      },
     },
   },
 }
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+  <div class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 p-4">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="font-medium text-gray-900">{{ name }}</h3>
+      <h3 class="font-medium text-white">{{ name }}</h3>
       <span v-if="unit" class="text-sm text-gray-500">{{ unit }}</span>
     </div>
     <div class="h-48">
