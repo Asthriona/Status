@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asthriona ltd. - {system.hostname}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0a;
+      color: #e4e4e7;
+      overflow: hidden;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(99, 58, 184, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      width: 90%;
+      padding: 48px 40px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      text-align: center;
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 28px;
+      opacity: 0.9;
+    }
+
+    .company {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(168, 130, 255, 0.8);
+      margin-bottom: 8px;
+    }
+
+    .hostname {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fafafa;
+      margin-bottom: 6px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(168, 130, 255, 0.5), transparent);
+      margin: 24px auto;
+      border-radius: 1px;
+    }
+
+    .info {
+      font-size: 14px;
+      color: rgba(228, 228, 231, 0.5);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .info strong {
+      color: rgba(228, 228, 231, 0.75);
+      font-weight: 500;
+    }
+
+    .status-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 10px;
+      background: rgba(168, 130, 255, 0.12);
+      border: 1px solid rgba(168, 130, 255, 0.2);
+      color: rgba(168, 130, 255, 0.9);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      transition: all 0.2s ease;
+    }
+
+    .status-link:hover {
+      background: rgba(168, 130, 255, 0.2);
+      border-color: rgba(168, 130, 255, 0.35);
+      color: #c4a8ff;
+      transform: translateY(-1px);
+    }
+
+    .status-link svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @media (max-width: 520px) {
+      .card { padding: 36px 28px; }
+      .hostname { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="card">
+    <svg class="logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="rgba(168,130,255,0.3)" stroke-width="1.5"/>
+      <circle cx="32" cy="32" r="22" stroke="rgba(168,130,255,0.15)" stroke-width="1"/>
+      <path d="M24 24 L32 18 L40 24 L40 40 L32 46 L24 40Z" stroke="rgba(168,130,255,0.7)" stroke-width="1.8" fill="rgba(168,130,255,0.06)"/>
+      <path d="M32 18 L32 46" stroke="rgba(168,130,255,0.3)" stroke-width="1"/>
+      <path d="M24 24 L40 24" stroke="rgba(168,130,255,0.2)" stroke-width="1" stroke-dasharray="2 2"/>
+      <circle cx="32" cy="32" r="3" fill="rgba(168,130,255,0.6)"/>
+    </svg>
+    <div class="company">Asthriona ltd.</div>
+    <div class="hostname">{system.hostname}</div>
+    <div class="divider"></div>
+    <div class="info">
+      Dedicated status monitoring instance<br>
+      Running <strong>Status</strong> by Asthriona
+    </div>
+    <a href="/status/" class="status-link">
+      <div class="dot"></div>
+      Open Status Page
+    </a>
+  </div>
+</body>
+</html>

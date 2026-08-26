@@ -1,0 +1,22 @@
+{
+    # Uncomment for production with a domain:
+    # email your@email.com
+}
+
+:80 {
+    handle /status/* {
+        handle_path /status/* {
+            reverse_proxy app:3000
+        }
+    }
+
+    handle /status {
+        redir /status/ permanent
+    }
+
+    handle {
+        root * /srv
+        file_server
+        templates
+    }
+}
