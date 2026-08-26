@@ -5,9 +5,6 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-ARG APP_BASE_URL=/
-ENV APP_BASE_URL=$APP_BASE_URL
-
 # Install dependencies
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 RUN pnpm install --frozen-lockfile || pnpm install

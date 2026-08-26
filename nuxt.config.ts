@@ -21,7 +21,6 @@ export default defineNuxtConfig({
   },
 
   app: {
-    baseURL: process.env.APP_BASE_URL || '/',
     head: {
       title: 'Asthriona Status',
       meta: [
