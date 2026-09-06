@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@sidebase/nuxt-auth": "^0.9.4",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.7",
     "jsonwebtoken": "^9.0.2",
