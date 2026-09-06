@@ -18,6 +18,28 @@ const OrgSchema = new Schema<IOrg>({
 
 export const Org = mongoose.models.Org || mongoose.model<IOrg>('Org', OrgSchema)
 
+// ─── Group ─────────────────────────────────────────────────────────────────────
+
+export interface IGroup extends Document {
+  orgId: string
+  name: string
+  description?: string
+  order: number
+  createdAt: Date
+}
+
+const GroupSchema = new Schema<IGroup>({
+  orgId: { type: String, required: true },
+  name: { type: String, required: true },
+  description: { type: String },
+  order: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+})
+
+GroupSchema.index({ orgId: 1, name: 1 }, { unique: true })
+
+export const Group = mongoose.models.Group || mongoose.model<IGroup>('Group', GroupSchema)
+
 // ─── User ──────────────────────────────────────────────────────────────────────
 
 export interface IUser extends Document {
@@ -129,6 +151,7 @@ export const Incident = mongoose.models.Incident || mongoose.model<IIncident>('I
 export interface IMonitor extends Document {
   orgId: string
   name: string
+  group: string
   url: string
   type: 'http' | 'tcp' | 'icmp' | 'dns'
   method: string
@@ -145,6 +168,7 @@ export interface IMonitor extends Document {
 const MonitorSchema = new Schema<IMonitor>({
   orgId: { type: String, required: true },
   name: { type: String, required: true },
+  group: { type: String, default: 'General' },
   url: { type: String, required: true },
   type: { type: String, enum: ['http', 'tcp', 'icmp', 'dns'], default: 'http' },
   method: { type: String, default: 'GET' },

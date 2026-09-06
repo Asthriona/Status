@@ -87,6 +87,7 @@ function formatDate(dateString: string) {
         <NuxtLink to="/admin/components" class="text-sm text-gray-400 hover:text-white transition-colors">Components</NuxtLink>
         <NuxtLink to="/admin/incidents" class="text-sm text-cyan-400 font-medium">Incidents</NuxtLink>
         <NuxtLink to="/admin/monitors" class="text-sm text-gray-400 hover:text-white transition-colors">Monitors</NuxtLink>
+        <NuxtLink to="/admin/groups" class="text-sm text-gray-400 hover:text-white transition-colors">Groups</NuxtLink>
       </div>
     </nav>
 

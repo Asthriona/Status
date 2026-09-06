@@ -43,6 +43,7 @@ export interface PublicStatus {
   monitors: {
     id: string
     name: string
+    group: string
     url: string
     status: MonitorStatus
     latency: number

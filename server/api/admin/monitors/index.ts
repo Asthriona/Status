@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const orgId = config.public.orgId
 
   if (method === 'GET') {
-    const monitors = await Monitor.find({ orgId }).sort({ createdAt: 1 }).lean()
+    const monitors = await Monitor.find({ orgId }).sort({ group: 1, name: 1 }).lean()
 
     const monitorsWithStatus = await Promise.all(
       monitors.map(async (monitor: any) => {
@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
     const monitor = await Monitor.create({
       orgId,
       name: body.name,
+      group: await ensureGroup(orgId, body.group || 'General'),
       url: body.url,
       type: body.type || 'http',
       method: body.method || 'GET',
@@ -49,6 +50,10 @@ export default defineEventHandler(async (event) => {
   if (method === 'PUT') {
     const body = await readBody(event)
     const { id, ...update } = body
+
+    if (update.group) {
+      update.group = await ensureGroup(orgId, update.group)
+    }
 
     const monitor = await Monitor.findByIdAndUpdate(id, update, { new: true }).lean()
     if (!monitor) {

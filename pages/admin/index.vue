@@ -55,6 +55,7 @@ function logout() {
           <NuxtLink to="/admin/components" class="text-sm text-gray-400 hover:text-white transition-colors">Components</NuxtLink>
           <NuxtLink to="/admin/incidents" class="text-sm text-gray-400 hover:text-white transition-colors">Incidents</NuxtLink>
           <NuxtLink to="/admin/monitors" class="text-sm text-gray-400 hover:text-white transition-colors">Monitors</NuxtLink>
+          <NuxtLink to="/admin/groups" class="text-sm text-gray-400 hover:text-white transition-colors">Groups</NuxtLink>
         </div>
         <div class="flex items-center gap-4">
           <NuxtLink to="/" class="text-sm text-cyan-400 hover:text-cyan-300 transition-colors" target="_blank">View Status Page</NuxtLink>

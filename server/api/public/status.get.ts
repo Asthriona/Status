@@ -16,7 +16,9 @@ export default defineEventHandler(async (event) => {
     .populate('componentIds', 'name')
     .lean()
 
-  const monitors = await Monitor.find({ orgId, active: true }).lean()
+  const monitors = await Monitor.find({ orgId, active: true })
+    .sort({ group: 1, name: 1 })
+    .lean()
   const monitorsWithStatus = await Promise.all(
     monitors.map(async (monitor: any) => {
       const latest = await MonitorResult.findOne({ monitorId: monitor._id })
@@ -35,6 +37,7 @@ export default defineEventHandler(async (event) => {
       return {
         id: monitor._id,
         name: monitor.name,
+        group: monitor.group || 'General',
         status: latest?.status || 'pending',
         latency: latest?.latency || 0,
         uptime,

@@ -3,12 +3,15 @@ definePageMeta({ layout: false })
 
 const token = ref('')
 const monitors = ref<any[]>([])
+const groups = ref<any[]>([])
 const loading = ref(true)
 const showModal = ref(false)
 const checkingId = ref<string | null>(null)
+const editingMonitor = ref<any>(null)
 
 const form = ref({
   name: '',
+  group: 'General',
   url: '',
   type: 'http',
   method: 'GET',
@@ -18,6 +21,26 @@ const form = ref({
   active: true,
 })
 
+const defaultForm = () => ({
+  name: '',
+  group: 'General',
+  url: '',
+  type: 'http',
+  method: 'GET',
+  interval: 60,
+  timeout: 10,
+  expectedStatus: 200,
+  active: true,
+})
+
+const groupOptions = computed(() => {
+  const names = new Set(groups.value.map((g: any) => g.name))
+  for (const monitor of monitors.value) {
+    if (monitor.group) names.add(monitor.group)
+  }
+  return [...names].sort()
+})
+
 onMounted(() => {
   token.value = localStorage.getItem('token') || ''
   if (!token.value) {
@@ -25,7 +48,18 @@ onMounted(() => {
     return
   }
   fetchMonitors()
+  fetchGroups()
 })
+
+async function fetchGroups() {
+  try {
+    groups.value = await $fetch('/api/admin/groups', {
+      headers: { Authorization: `Bearer ${token.value}` },
+    }) as any[]
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 async function fetchMonitors() {
   try {
@@ -39,15 +73,46 @@ async function fetchMonitors() {
   }
 }
 
+function openModal(monitor?: any) {
+  if (monitor) {
+    editingMonitor.value = monitor
+    form.value = {
+      name: monitor.name || '',
+      group: monitor.group || 'General',
+      url: monitor.url || '',
+      type: monitor.type || 'http',
+      method: monitor.method || 'GET',
+      interval: monitor.interval || 60,
+      timeout: monitor.timeout || 10,
+      expectedStatus: monitor.expectedStatus || 200,
+      active: monitor.active !== false,
+    }
+  } else {
+    editingMonitor.value = null
+    form.value = defaultForm()
+  }
+  showModal.value = true
+}
+
 async function saveMonitor() {
   try {
-    await $fetch('/api/admin/monitors', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token.value}` },
-      body: form.value,
-    })
+    const headers = { Authorization: `Bearer ${token.value}` }
+
+    if (editingMonitor.value) {
+      await $fetch('/api/admin/monitors', {
+        method: 'PUT',
+        headers,
+        body: { id: editingMonitor.value._id, ...form.value },
+      })
+    } else {
+      await $fetch('/api/admin/monitors', {
+        method: 'POST',
+        headers,
+        body: form.value,
+      })
+    }
     showModal.value = false
-    form.value = { name: '', url: '', type: 'http', method: 'GET', interval: 60, timeout: 10, expectedStatus: 200, active: true }
+    form.value = defaultForm()
     await fetchMonitors()
   } catch (err) {
     console.error(err)
@@ -99,6 +164,7 @@ function formatDate(dateString: string | null) {
         <NuxtLink to="/admin/components" class="text-sm text-gray-400 hover:text-white transition-colors">Components</NuxtLink>
         <NuxtLink to="/admin/incidents" class="text-sm text-gray-400 hover:text-white transition-colors">Incidents</NuxtLink>
         <NuxtLink to="/admin/monitors" class="text-sm text-cyan-400 font-medium">Monitors</NuxtLink>
+        <NuxtLink to="/admin/groups" class="text-sm text-gray-400 hover:text-white transition-colors">Groups</NuxtLink>
       </div>
     </nav>
 
@@ -106,7 +172,7 @@ function formatDate(dateString: string | null) {
       <div class="flex items-center justify-between mb-8">
         <h1 class="text-2xl font-bold text-white">Monitors</h1>
         <button
-          @click="showModal = true"
+          @click="openModal()"
           class="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:from-cyan-400 hover:to-blue-400 transition-all"
         >
           Add Monitor
@@ -141,6 +207,7 @@ function formatDate(dateString: string | null) {
                 <h3 class="font-medium text-white">{{ monitor.name }}</h3>
                 <div class="flex items-center gap-2 text-sm text-gray-500">
                   <span class="px-1.5 py-0.5 bg-white/5 border border-white/5 rounded text-xs text-gray-400">{{ monitor.type }}</span>
+                  <span class="px-1.5 py-0.5 bg-white/5 border border-white/5 rounded text-xs text-cyan-400">{{ monitor.group }}</span>
                   <span>{{ monitor.url }}</span>
                 </div>
               </div>
@@ -153,6 +220,12 @@ function formatDate(dateString: string | null) {
                 </div>
               </div>
               <div class="flex gap-2">
+                <button
+                  @click="openModal(monitor)"
+                  class="px-3 py-1 text-sm text-cyan-400 border border-white/10 rounded-lg hover:bg-white/5 transition-all"
+                >
+                  Edit
+                </button>
                 <button
                   @click="checkNow(monitor._id)"
                   :disabled="checkingId === monitor._id"
@@ -177,11 +250,25 @@ function formatDate(dateString: string | null) {
     <div v-if="showModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
       <div class="bg-slate-900 border border-white/10 rounded-lg shadow-xl w-full max-w-md mx-4">
         <div class="p-6">
-          <h2 class="text-lg font-medium text-white mb-4">Add Monitor</h2>
+          <h2 class="text-lg font-medium text-white mb-4">{{ editingMonitor ? 'Edit Monitor' : 'Add Monitor' }}</h2>
           <form @submit.prevent="saveMonitor" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-1">Name</label>
               <input v-model="form.name" required class="w-full px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none" placeholder="API Server" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Group</label>
+              <div class="flex gap-2">
+                <select v-model="form.group" class="flex-1 px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+                  <option v-for="group in groupOptions" :key="group" :value="group">{{ group }}</option>
+                </select>
+                <NuxtLink
+                  to="/admin/groups"
+                  class="px-3 py-2 text-xs text-cyan-400 border border-white/10 rounded-lg hover:bg-white/5 flex items-center transition-all"
+                >
+                  Manage
+                </NuxtLink>
+              </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-1">URL</label>
@@ -222,7 +309,7 @@ function formatDate(dateString: string | null) {
             </div>
             <div class="flex justify-end gap-3 pt-4">
               <button type="button" @click="showModal = false" class="px-4 py-2 text-gray-400 hover:text-white transition-colors">Cancel</button>
-              <button type="submit" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-400 hover:to-blue-400 transition-all">Create</button>
+              <button type="submit" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-400 hover:to-blue-400 transition-all">{{ editingMonitor ? 'Update' : 'Create' }}</button>
             </div>
           </form>
         </div>

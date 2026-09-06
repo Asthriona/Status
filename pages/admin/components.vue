@@ -3,6 +3,7 @@ definePageMeta({ layout: false })
 
 const token = ref('')
 const components = ref<any[]>([])
+const groups = ref<any[]>([])
 const loading = ref(true)
 const showModal = ref(false)
 const editingComponent = ref<any>(null)
@@ -15,6 +16,14 @@ const form = ref({
   order: 0,
 })
 
+const groupOptions = computed(() => {
+  const names = new Set(groups.value.map((g: any) => g.name))
+  for (const component of components.value) {
+    if (component.group) names.add(component.group)
+  }
+  return [...names].sort()
+})
+
 onMounted(() => {
   token.value = localStorage.getItem('token') || ''
   if (!token.value) {
@@ -22,7 +31,18 @@ onMounted(() => {
     return
   }
   fetchComponents()
+  fetchGroups()
 })
+
+async function fetchGroups() {
+  try {
+    groups.value = await $fetch('/api/admin/groups', {
+      headers: { Authorization: `Bearer ${token.value}` },
+    }) as any[]
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 async function fetchComponents() {
   try {
@@ -103,6 +123,7 @@ async function deleteComponent(id: string) {
         <NuxtLink to="/admin/components" class="text-sm text-cyan-400 font-medium">Components</NuxtLink>
         <NuxtLink to="/admin/incidents" class="text-sm text-gray-400 hover:text-white transition-colors">Incidents</NuxtLink>
         <NuxtLink to="/admin/monitors" class="text-sm text-gray-400 hover:text-white transition-colors">Monitors</NuxtLink>
+        <NuxtLink to="/admin/groups" class="text-sm text-gray-400 hover:text-white transition-colors">Groups</NuxtLink>
       </div>
     </nav>
 
@@ -185,7 +206,17 @@ async function deleteComponent(id: string) {
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-1">Group</label>
-              <input v-model="form.group" class="w-full px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none" />
+              <div class="flex gap-2">
+                <select v-model="form.group" class="flex-1 px-3 py-2 border border-white/10 bg-white/5 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+                  <option v-for="group in groupOptions" :key="group" :value="group">{{ group }}</option>
+                </select>
+                <NuxtLink
+                  to="/admin/groups"
+                  class="px-3 py-2 text-xs text-cyan-400 border border-white/10 rounded-lg hover:bg-white/5 flex items-center transition-all"
+                >
+                  Manage
+                </NuxtLink>
+              </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-1">Status</label>

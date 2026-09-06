@@ -15,6 +15,16 @@ const componentGroups = computed(() => {
   return groups
 })
 
+const monitorGroups = computed(() => {
+  const groups: Record<string, any[]> = {}
+  for (const monitor of (statusData.value?.monitors || [])) {
+    const group = monitor.group || 'General'
+    if (!groups[group]) groups[group] = []
+    groups[group].push(monitor)
+  }
+  return groups
+})
+
 onMounted(async () => {
   await fetchStatus()
   connect(orgId)
@@ -113,30 +123,35 @@ onMounted(async () => {
         <!-- Monitors -->
         <div v-if="statusData.monitors?.length">
           <h2 class="text-lg font-semibold text-white mb-4">Monitors</h2>
-          <div class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 divide-y divide-white/5">
-            <div
-              v-for="monitor in statusData.monitors"
-              :key="monitor.id"
-              class="px-4 py-3 space-y-3"
-            >
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-2.5 h-2.5 rounded-full"
-                    :class="{
-                      'bg-green-500': monitor.status === 'up',
-                      'bg-red-500': monitor.status === 'down',
-                      'bg-yellow-500': monitor.status === 'degraded',
-                    }"
-                  ></div>
-                  <div>
-                    <span class="font-medium text-white">{{ monitor.name }}</span>
-                    <div class="text-xs text-gray-500">{{ monitor.latency }}ms</div>
+          <div class="space-y-6">
+            <div v-for="(monitors, group) in monitorGroups" :key="group">
+              <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">{{ group }}</h3>
+              <div class="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-white/5 divide-y divide-white/5">
+                <div
+                  v-for="monitor in monitors"
+                  :key="monitor.id"
+                  class="px-4 py-3 space-y-3"
+                >
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-2.5 h-2.5 rounded-full"
+                        :class="{
+                          'bg-green-500': monitor.status === 'up',
+                          'bg-red-500': monitor.status === 'down',
+                          'bg-yellow-500': monitor.status === 'degraded',
+                        }"
+                      ></div>
+                      <div>
+                        <span class="font-medium text-white">{{ monitor.name }}</span>
+                        <div class="text-xs text-gray-500">{{ monitor.latency }}ms</div>
+                      </div>
+                    </div>
+                    <span class="text-sm text-gray-500">{{ monitor.uptime.toFixed(2) }}% uptime</span>
                   </div>
+                  <PublicUptimeBar :uptime-percent="monitor.uptime" />
                 </div>
-                <span class="text-sm text-gray-500">{{ monitor.uptime.toFixed(2) }}% uptime</span>
               </div>
-              <PublicUptimeBar :uptime-percent="monitor.uptime" />
             </div>
           </div>
         </div>

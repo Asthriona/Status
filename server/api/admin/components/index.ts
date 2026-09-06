@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
       name: body.name,
       description: body.description,
       status: body.status || 'operational',
-      group: body.group || 'General',
+      group: await ensureGroup(orgId, body.group || 'General'),
       order: body.order || 0,
     })
 
@@ -29,6 +29,10 @@ export default defineEventHandler(async (event) => {
   if (method === 'PUT') {
     const body = await readBody(event)
     const { id, ...update } = body
+
+    if (update.group) {
+      update.group = await ensureGroup(orgId, update.group)
+    }
 
     const component = await Component.findByIdAndUpdate(id, update, { new: true }).lean()
     if (!component) {
