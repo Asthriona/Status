@@ -37,8 +37,8 @@ export async function getComponentUptimeForPeriod(
 export async function getDailyUptimeBars(
   monitorId: string,
   days: number = 90
-): Promise<{ date: string; uptime: number }[]> {
-  const bars: { date: string; uptime: number }[] = []
+): Promise<{ date: string; uptime: number | null }[]> {
+  const bars: { date: string; uptime: number | null }[] = []
   const now = new Date()
 
   for (let i = days - 1; i >= 0; i--) {
@@ -54,7 +54,7 @@ export async function getDailyUptimeBars(
       checkedAt: { $gte: dayStart, $lt: dayEnd },
     }).lean()
 
-    let uptime = 100
+    let uptime: number | null = null
     if (results.length > 0) {
       const upCount = results.filter((r: any) => r.status === 'up').length
       uptime = Math.round((upCount / results.length) * 10000) / 100

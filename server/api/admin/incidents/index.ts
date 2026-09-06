@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
       const componentStatus = mapImpactToStatus(body.impact)
       for (const compId of body.componentIds) {
         await Component.findByIdAndUpdate(compId, { status: componentStatus })
+        await recordComponentStatus(orgId, compId, componentStatus)
         broadcastComponentUpdate(orgId, { componentId: compId, status: componentStatus })
       }
     }
@@ -75,6 +76,7 @@ export default defineEventHandler(async (event) => {
 
         for (const compId of incident.componentIds) {
           await Component.findByIdAndUpdate(compId, { status: 'operational' })
+          await recordComponentStatus(orgId, compId, 'operational')
           broadcastComponentUpdate(orgId, { componentId: compId, status: 'operational' })
         }
       }

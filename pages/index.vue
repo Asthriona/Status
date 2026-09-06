@@ -25,15 +25,43 @@ const monitorGroups = computed(() => {
   return groups
 })
 
-onMounted(async () => {
+const uptimeBars = ref<Record<string, { date: string; uptime: number | null }[]>>({})
+
+async function fetchUptimeBars() {
+  const monitors = statusData.value?.monitors || []
+  const components = statusData.value?.components || []
+  if (!monitors.length && !components.length) return
+
+  const monitorIds = monitors.map((m: any) => m.id).join(',')
+  const componentIds = components.map((c: any) => c._id).join(',')
+
+  try {
+    uptimeBars.value = await $fetch('/api/public/uptime', {
+      params: {
+        ids: monitorIds,
+        componentIds,
+        days: 90,
+      },
+    })
+  } catch (err) {
+    console.error('Failed to fetch uptime bars:', err)
+  }
+}
+
+async function refresh() {
   await fetchStatus()
+  await fetchUptimeBars()
+}
+
+onMounted(async () => {
+  await refresh()
   connect(orgId)
 
   const { on } = useSocket()
-  on('component:update', () => fetchStatus())
-  on('incident:create', () => fetchStatus())
-  on('incident:update', () => fetchStatus())
-  on('incident:resolve', () => fetchStatus())
+  on('component:update', () => refresh())
+  on('incident:create', () => refresh())
+  on('incident:update', () => refresh())
+  on('incident:resolve', () => refresh())
 })
 </script>
 
@@ -78,11 +106,11 @@ onMounted(async () => {
                   :name="component.name"
                   :status="component.status"
                   :description="component.description"
-                  :uptime="{
-                    day: component.uptime?.day || 100,
-                    thirtyDays: component.uptime?.thirtyDays || 100,
-                    ninetyDays: component.uptime?.ninetyDays || 100,
-                  }"
+:uptime="{
+                  day: component.uptime?.day,
+                  thirtyDays: component.uptime?.thirtyDays,
+                  ninetyDays: component.uptime?.ninetyDays,
+                }"
                 />
               </div>
             </div>
@@ -104,10 +132,10 @@ onMounted(async () => {
                   <div class="flex items-center justify-between mb-2">
                     <span class="text-sm font-medium text-gray-300">{{ component.name }}</span>
                     <span class="text-sm text-gray-500">
-                      {{ (component.uptime?.ninetyDays || 100).toFixed(2) }}%
+                      {{ component.uptime?.ninetyDays ? `${component.uptime.ninetyDays.toFixed(2)}%` : 'No data' }}
                     </span>
                   </div>
-                  <PublicUptimeBar :uptime-percent="component.uptime?.ninetyDays || 100" />
+                  <PublicUptimeBar :data="uptimeBars[component._id]" :days="90" />
                 </div>
               </div>
             </div>
@@ -149,7 +177,7 @@ onMounted(async () => {
                     </div>
                     <span class="text-sm text-gray-500">{{ monitor.uptime.toFixed(2) }}% uptime</span>
                   </div>
-                  <PublicUptimeBar :uptime-percent="monitor.uptime" />
+                  <PublicUptimeBar :data="uptimeBars[monitor.id]" :days="90" />
                 </div>
               </div>
             </div>

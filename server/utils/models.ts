@@ -92,6 +92,31 @@ ComponentSchema.index({ orgId: 1 })
 
 export const Component = mongoose.models.Component || mongoose.model<IComponent>('Component', ComponentSchema)
 
+// ─── Component Status Event ─────────────────────────────────────────────────────
+
+export interface IComponentStatusEvent extends Document {
+  orgId: string
+  componentId: mongoose.Types.ObjectId
+  status: 'operational' | 'degraded' | 'partial_outage' | 'major_outage' | 'maintenance'
+  changedAt: Date
+}
+
+const ComponentStatusEventSchema = new Schema<IComponentStatusEvent>({
+  orgId: { type: String, required: true },
+  componentId: { type: Schema.Types.ObjectId, ref: 'Component', required: true },
+  status: {
+    type: String,
+    enum: ['operational', 'degraded', 'partial_outage', 'major_outage', 'maintenance'],
+    required: true,
+  },
+  changedAt: { type: Date, default: Date.now },
+})
+
+ComponentStatusEventSchema.index({ componentId: 1, changedAt: 1 })
+
+export const ComponentStatusEvent =
+  mongoose.models.ComponentStatusEvent || mongoose.model<IComponentStatusEvent>('ComponentStatusEvent', ComponentStatusEventSchema)
+
 // ─── Incident ──────────────────────────────────────────────────────────────────
 
 export interface IIncidentUpdate {

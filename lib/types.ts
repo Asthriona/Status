@@ -15,9 +15,9 @@ export interface PublicComponent {
   status: ComponentStatus
   group: string
   uptime: {
-    day: number
-    thirtyDays: number
-    ninetyDays: number
+    day: number | null
+    thirtyDays: number | null
+    ninetyDays: number | null
   }
 }
 

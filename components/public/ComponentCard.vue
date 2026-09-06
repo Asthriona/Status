@@ -4,9 +4,9 @@ interface Props {
   status: string
   description?: string
   uptime: {
-    day: number
-    thirtyDays: number
-    ninetyDays: number
+    day?: number
+    thirtyDays?: number
+    ninetyDays?: number
   }
 }
 
@@ -23,8 +23,16 @@ const statusConfig = computed(() => {
   return configs[props.status] || configs.operational
 })
 
-function formatUptime(percent: number): string {
+function formatUptime(percent: number | undefined): string {
+  if (percent === undefined) return 'No data'
   return `${percent.toFixed(2)}%`
+}
+
+function uptimeColor(percent: number | undefined): string {
+  if (percent === undefined) return 'text-gray-500'
+  if (percent >= 99) return 'text-green-400'
+  if (percent >= 95) return 'text-yellow-400'
+  return 'text-red-400'
 }
 </script>
 
@@ -49,19 +57,19 @@ function formatUptime(percent: number): string {
     <div class="mt-4 flex items-center gap-6 text-sm text-gray-400">
       <div class="flex items-center gap-1">
         <span class="text-gray-500">24h:</span>
-        <span :class="uptime.day >= 99 ? 'text-green-400' : uptime.day >= 95 ? 'text-yellow-400' : 'text-red-400'">
+        <span :class="uptimeColor(uptime.day)">
           {{ formatUptime(uptime.day) }}
         </span>
       </div>
       <div class="flex items-center gap-1">
         <span class="text-gray-500">30d:</span>
-        <span :class="uptime.thirtyDays >= 99 ? 'text-green-400' : uptime.thirtyDays >= 95 ? 'text-yellow-400' : 'text-red-400'">
+        <span :class="uptimeColor(uptime.thirtyDays)">
           {{ formatUptime(uptime.thirtyDays) }}
         </span>
       </div>
       <div class="flex items-center gap-1">
         <span class="text-gray-500">90d:</span>
-        <span :class="uptime.ninetyDays >= 99 ? 'text-green-400' : uptime.ninetyDays >= 95 ? 'text-yellow-400' : 'text-red-400'">
+        <span :class="uptimeColor(uptime.ninetyDays)">
           {{ formatUptime(uptime.ninetyDays) }}
         </span>
       </div>

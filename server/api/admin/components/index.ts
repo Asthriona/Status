@@ -22,6 +22,8 @@ export default defineEventHandler(async (event) => {
       order: body.order || 0,
     })
 
+    await recordComponentStatus(orgId, component._id, component.status)
+
     broadcastComponentUpdate(orgId, { componentId: component._id, status: component.status })
     return component
   }
@@ -34,9 +36,18 @@ export default defineEventHandler(async (event) => {
       update.group = await ensureGroup(orgId, update.group)
     }
 
+    const existing = await Component.findById(id).lean()
+    if (!existing) {
+      throw createError({ statusCode: 404, message: 'Component not found' })
+    }
+
     const component = await Component.findByIdAndUpdate(id, update, { new: true }).lean()
     if (!component) {
       throw createError({ statusCode: 404, message: 'Component not found' })
+    }
+
+    if (existing.status !== component.status) {
+      await recordComponentStatus(orgId, component._id, component.status)
     }
 
     broadcastComponentUpdate(orgId, { componentId: component._id, status: component.status })

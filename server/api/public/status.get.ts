@@ -8,6 +8,13 @@ export default defineEventHandler(async (event) => {
     .sort({ group: 1, order: 1 })
     .lean()
 
+  const componentsWithUptime = await Promise.all(
+    components.map(async (component: any) => ({
+      ...component,
+      uptime: await getComponentStatusUptime(component._id),
+    }))
+  )
+
   const activeIncidents = await Incident.find({
     orgId,
     status: { $ne: 'resolved' },
@@ -49,7 +56,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     overallStatus,
-    components,
+    components: componentsWithUptime,
     activeIncidents,
     monitors: monitorsWithStatus,
   }
